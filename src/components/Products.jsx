@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { addCart } from "../redux/action";
-import  SearchBar  from "./SearchBar.jsx";
-
+import SearchBar from "./SearchBar.jsx";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const Products = () => {
   const [data, setData] = useState([]);
-  const [filter, setFilter] = useState(data);
+  const [filter, setFilter] = useState([]);
   const [loading, setLoading] = useState(false);
-  let componentMounted = true;
 
   const dispatch = useDispatch();
 
@@ -22,135 +19,103 @@ const Products = () => {
   };
 
   useEffect(() => {
+    let componentMounted = true;
     const getProducts = async () => {
       setLoading(true);
-      const response = await fetch("https://fakestoreapi.com/products/");
-      if (componentMounted) {
-        setData(await response.clone().json());
-        setFilter(await response.json());
-        setLoading(false);
+      try {
+        const response = await fetch("http://localhost:8002/");
+        const products = await response.json();
+        if (componentMounted) {
+          setData(products.products);
+          setFilter(Array.isArray(products.products) ? products.products : []); // Ensure filter is always an array
+        }
+      } catch (error) {
+        console.error("Failed to fetch products", error);
+        setFilter([]); // Reset filter on error
+      } finally {
+        if (componentMounted) {
+          setLoading(false);
+        }
       }
-
-      return () => {
-        componentMounted = false;
-      };
     };
 
     getProducts();
+
+    return () => {
+      componentMounted = false;
+    };
   }, []);
 
-  const Loading = () => {
-    return (
-      <>
-        <div className="col-12 py-5 text-center">
-          <Skeleton height={40} width={560} />
-        </div>
-        <div className="col-md-4 col-sm-6 col-xs-8 col-12 mb-4">
+  const Loading = () => (
+    <>
+      <div className="col-12 py-5 text-center">
+        <Skeleton height={40} width={560} />
+      </div>
+      {[...Array(7)].map((_, index) => (
+        <div key={index} className="col-md-4 col-sm-6 col-xs-8 col-12 mb-4">
           <Skeleton height={592} />
         </div>
-        <div className="col-md-4 col-sm-6 col-xs-8 col-12 mb-4">
-          <Skeleton height={592} />
-        </div>
-        <div className="col-md-4 col-sm-6 col-xs-8 col-12 mb-4">
-          <Skeleton height={592} />
-        </div>
-        <div className="col-md-4 col-sm-6 col-xs-8 col-12 mb-4">
-          <Skeleton height={592} />
-        </div>
-        <div className="col-md-4 col-sm-6 col-xs-8 col-12 mb-4">
-          <Skeleton height={592} />
-        </div>
-        <div className="col-md-4 col-sm-6 col-xs-8 col-12 mb-4">
-          <Skeleton height={592} />
-        </div>
-      </>
-    );
-  };
+      ))}
+    </>
+  );
 
-  const filterProduct = (cat) => {
-    const updatedList = data.filter((item) => item.category === cat);
+  const filterProduct = (type) => {
+    const updatedList = data.filter((item) => item.type === type);
     setFilter(updatedList);
   };
 
-  const ShowProducts = () => {
-    return (
-      <>
-        <div className="buttons text-center py-5">
-          <button
-            className="btn btn-outline-dark btn-sm m-2"
-            onClick={() => setFilter(data)}>
-            All
-          </button>
-          <button
-            className="btn btn-outline-dark btn-sm m-2"
-            onClick={() => filterProduct("men's clothing")}>
-            Men's Clothing
-          </button>
-          <button
-            className="btn btn-outline-dark btn-sm m-2"
-            onClick={() => filterProduct("women's clothing")}>
-            Women's Clothing
-          </button>
-          <button
-            className="btn btn-outline-dark btn-sm m-2"
-            onClick={() => filterProduct("jewelery")}>
-            Jewelery
-          </button>
-          <button
-            className="btn btn-outline-dark btn-sm m-2"
-            onClick={() => filterProduct("electronics")}>
-            Electronics
-          </button>
-        </div>
+  const ShowProducts = () => (
+    <>
+      <div className="buttons text-center py-5">
+        <button className="btn btn-outline-dark btn-sm m-2" onClick={() => setFilter(data)}>
+          All
+        </button>
+        <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterProduct("Fashion")}>
+          Fashion
+        </button>
+        <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterProduct("Electronics")}>
+          Electronics
+        </button>
+        <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterProduct("Accessories")}>
+          Accessories
+        </button>
+      </div>
 
-        {filter.map((product) => {
-          return (
-            <div
-              id={product.id}
-              key={product.id}
-              className="col-md-4 col-sm-6 col-xs-8 col-12 mb-4">
-              <div className="card text-center h-100" key={product.id}>
-                <img
-                  className="card-img-top p-3"
-                  src={product.image}
-                  alt="Card"
-                  height={300}
-                />
-                <div className="card-body">
-                  <h5 className="card-title">
-                    {product.title.substring(0, 12)}...
-                  </h5>
-                  <p className="card-text">
-                    {product.description.substring(0, 90)}...
-                  </p>
-                </div>
-                <ul className="list-group list-group-flush">
-                  <li className="list-group-item lead">$ {product.price}</li>
-                  {/* <li className="list-group-item">Dapibus ac facilisis in</li>
-                    <li className="list-group-item">Vestibulum at eros</li> */}
-                </ul>
-                <div className="card-body">
-                  <Link
-                    to={"/product/" + product.id}
-                    className="btn btn-dark m-1">
-                    Buy Now
-                  </Link>
-                  <button
-                    className="btn btn-dark m-1"
-                    onClick={() => {
-                      toast.success("Added to cart");
-                      addProduct(product);
-                    }}>
-                    Add to Cart
-                  </button>
-                </div>
+      {Array.isArray(filter) && filter.length > 0 ? (
+        filter.map((product) => (
+          <div key={product._id} className="col-md-4 col-sm-6 col-xs-8 col-12 mb-4">
+            <div className="card text-center h-100">
+              <img className="card-img-top p-3" src={product.img} alt="Card" height={300} />
+              <div className="card-body">
+                <h5 className="card-title">{product.name.substring(0, 12)}...</h5>
+                <p className="card-text">{product.desc.substring(0, 90)}...</p>
+              </div>
+              <ul className="list-group list-group-flush">
+                <li className="list-group-item lead">$ {product.price}</li>
+              </ul>
+              <div className="card-body">
+                <Link to={`/product/${product._id}`} className="btn btn-dark m-1">
+                  Buy Now
+                </Link>
+                <button
+                  className="btn btn-dark m-1"
+                  onClick={() => {
+                    toast.success("Added to cart");
+                    addProduct(product);
+                  }}
+                >
+                  Add to Cart
+                </button>
               </div>
             </div>
-          );
-        })}
-      </>
-    );
-  };
+          </div>
+        ))
+      ) : (
+        <p>No products available</p>
+      )}
+    </>
+  );
+
   return (
     <>
       <div className="container my-3 py-3">
