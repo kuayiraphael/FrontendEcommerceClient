@@ -5,6 +5,10 @@ const getInitialCart = () => {
 };
 
 const handleCart = (state = getInitialCart(), action) => {
+  console.log("Action Type:", action.type);
+  console.log("Action Payload:", action.payload);
+  console.log("Current State:", state);
+
   const product = action.payload;
   let updatedCart;
 
@@ -22,6 +26,7 @@ const handleCart = (state = getInitialCart(), action) => {
       }
       // Update localStorage
       localStorage.setItem("cart", JSON.stringify(updatedCart));
+      console.log("Updated State after ADDITEM:", updatedCart);
       return updatedCart;
 
     case "DELITEM":
@@ -35,6 +40,7 @@ const handleCart = (state = getInitialCart(), action) => {
       }
       // Update localStorage
       localStorage.setItem("cart", JSON.stringify(updatedCart));
+      console.log("Updated State after DELITEM:", updatedCart);
       return updatedCart;
 
     default:
