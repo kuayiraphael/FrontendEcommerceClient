@@ -1,4 +1,3 @@
-// export default Navbar;
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -6,7 +5,7 @@ import { useSelector } from "react-redux";
 const Navbar = () => {
   const state = useSelector((state) => state.handleCart);
   const navigate = useNavigate();
-  
+
   // Check if user is logged in by looking for the access token in localStorage
   const isLoggedIn = !!localStorage.getItem("accessToken");
 
@@ -33,8 +32,7 @@ const Navbar = () => {
           data-target="#navbarSupportedContent"
           aria-controls="navbarSupportedContent"
           aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
+          aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
         </button>
 
@@ -44,7 +42,7 @@ const Navbar = () => {
             {isLoggedIn && (
               <>
                 <li className="nav-item">
-                  <NavLink className="nav-link" to="/">
+                  <NavLink className="nav-link" to="/home">
                     Home
                   </NavLink>
                 </li>
@@ -81,16 +79,25 @@ const Navbar = () => {
               // Show Logout button if logged in
               <button
                 className="btn btn-outline-dark m-2"
-                onClick={handleLogout}
-              >
+                onClick={handleLogout}>
                 <i className="fa fa-sign-out-alt mr-1"></i> Logout
               </button>
             )}
 
             {/* Show Cart */}
-            <NavLink to="/cart" className="btn btn-outline-dark m-2">
-              <i className="fa fa-cart-shopping mr-1"></i> Cart ({state.length})
-            </NavLink>
+            {isLoggedIn && (
+              <NavLink to="/cart" className="btn btn-outline-dark m-2">
+                <i className="fa fa-cart-shopping mr-1"></i> Cart (
+                {state.length})
+              </NavLink>
+            )}
+
+            {/* Show Cart */}
+            {isLoggedIn && (
+              <NavLink to="/seller" className="btn btn-outline-dark m-2">
+                <i className="fa fa-cart-shopping mr-1"></i> Be a Seller
+              </NavLink>
+            )}
           </div>
         </div>
       </div>
