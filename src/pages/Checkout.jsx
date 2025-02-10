@@ -35,42 +35,35 @@ const Checkout = () => {
     state.map((item) => {
       return (totalItems += item.qty);
     });
-
+    
     const handleFormSubmit = async (event) => {
       event.preventDefault();
 
-      const token = localStorage.getItem("accessToken"); // Retrieve token from localStorage
-
+      const token = localStorage.getItem("accessToken");
       if (!token) {
         alert("Authorization token is missing.");
         return;
       }
 
       try {
-        // Make sure to include the token in the Authorization header with "Bearer" prefix
+        // Send empty POST with just auth token
         const response = await axios.post(
           "https://orders-microservice-h77y.onrender.com/order",
-          {}, // Empty body for now, can be updated later
+          {}, // Empty payload
           {
             headers: {
-              Authorization: `Bearer ${token}`, // Send the Bearer token in the Authorization header
+              Authorization: `Bearer ${token}`,
             },
           }
         );
 
         console.log("Order Created:", response.data);
-
-        // Show success toast
         toast.success("Order Placed Successfully!");
-
-        // Optionally, reset cart or navigate
-        // Example: navigate("/confirmation");
       } catch (error) {
-        console.error("Error placing order:", error);
+        console.error("Error placing order:", error.response?.data || error);
         toast.error("Error during checkout.");
       }
     };
-
     return (
       <>
         <div className="container py-5">

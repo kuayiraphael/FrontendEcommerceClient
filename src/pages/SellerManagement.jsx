@@ -3,49 +3,49 @@ import axios from "axios";
 import { Navbar, Footer } from "../components";
 import { useNavigate } from "react-router-dom";
 import {
-    FiSearch,
-    FiPlus,
-    FiEdit,
-    FiTrash2,
-    FiBox,
-    FiDollarSign,
-    FiCheckCircle,
-    FiRefreshCw, // Added for clear button icon
+  FiSearch,
+  FiPlus,
+  FiEdit,
+  FiTrash2,
+  FiBox,
+  FiDollarSign,
+  FiCheckCircle,
+  FiRefreshCw, // Added for clear button icon
 } from "react-icons/fi";
 
 const productTypes = [
-    "Electronics",
-    "Fashion",
-    "Home and Kitchen",
-    "Health and Personal Care",
-    "Books and Stationery",
-    "Sports and Outdoors",
-    "Toys and Games",
-    "Beauty and Cosmetics",
-    "Automotive",
-    "Jewelry and Accessories",
-    "Groceries and Food",
-    "Baby Products",
-    "Pet Supplies",
-    "Tools and Hardware",
-    "Office Supplies",
-    "Musical Instruments",
-    "Furniture",
-    "Art and Craft",
-    "Industrial and Scientific",
-    "Video Games and Consoles",
-    "Music",
+  "Electronics",
+  "Fashion",
+  "Home and Kitchen",
+  "Health and Personal Care",
+  "Books and Stationery",
+  "Sports and Outdoors",
+  "Toys and Games",
+  "Beauty and Cosmetics",
+  "Automotive",
+  "Jewelry and Accessories",
+  "Groceries and Food",
+  "Baby Products",
+  "Pet Supplies",
+  "Tools and Hardware",
+  "Office Supplies",
+  "Musical Instruments",
+  "Furniture",
+  "Art and Craft",
+  "Industrial and Scientific",
+  "Video Games and Consoles",
+  "Music",
 ];
 
 const initialFormState = {
-    name: "",
-    desc: "",
-    img: "",
-    type: "",
-    unit: "",
-    price: "",
-    available: true,
-    supplier: "",
+  name: "",
+  desc: "",
+  img: "",
+  type: "",
+  unit: "",
+  price: "",
+  available: true,
+  supplier: "",
 }; // Added to store initial state
 
 const SellerManagement = () => {
@@ -58,7 +58,7 @@ const SellerManagement = () => {
   const [formData, setFormData] = useState(initialFormState);
 
   const navigate = useNavigate();
-  const API_URL = "http://localhost:8003";
+  const API_URL = "https://products-microservice-kprm.onrender.com";
   const accessToken = localStorage.getItem("accessToken");
 
   const CLOUD_NAME = "dprosgsvm";
